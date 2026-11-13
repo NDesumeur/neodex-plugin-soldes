@@ -353,7 +353,7 @@ export default async function (ctx) {
   const last = it => it.hist[it.hist.length - 1]?.p ?? null;
   async function check(it, quiet = false) {
     let r; try { r = await ctx.net(it.url); } catch (e) { it.err = /PERMISSION/.test(e.message) ? 'accès refusé' : 'site injoignable'; return false; }
-    if (!r.ok) { it.err = 'le site répond ' + r.status + (r.status === 403 || r.status === 503 ? ' (il bloque les robots : note le prix à la main)' : ''); return false; }
+    if (!r.ok) { it.err = 'le site répond ' + r.status + ([400, 403, 429, 503].includes(r.status) ? ' (il bloque les robots : note le prix à la main)' : ''); return false; }
     const got = soParse(r.body); it.checked = Date.now();
     if (got.price == null) { it.err = 'prix introuvable sur la page : note-le à la main'; return false; }
     it.err = ''; if (!it.name || it.name === it.url) it.name = got.name || it.url; it.cur = got.cur;
