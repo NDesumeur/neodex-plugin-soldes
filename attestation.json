@@ -1,0 +1,9 @@
+{
+  "pluginId": "neodex.soldes",
+  "repo": "NDesumeur/neodex-plugin-soldes",
+  "version": "1.0.0",
+  "sha256": "25e20abda8dfbc7ed58e76a3a793f71c3eb525f27da0db8666415a6ce30ad93f",
+  "approvedAt": "2026-11-13T23:16:59.349Z",
+  "neobase": ">=4.0.0",
+  "signature": "9KMFOmeu+OofJjOxJHcKEhhfBehD0EceDJN8v5oo4KK6xVuoro6XuN/AqH1NPG7qTcwCX6OvHzZ7AkfhHSdkDg=="
+}
