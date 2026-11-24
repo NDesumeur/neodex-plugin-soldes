@@ -4,6 +4,10 @@ Le prix des produits que tu attends, surveillé pour toi.
 
 *English version: [README.en.md](README.en.md)*
 
+## Surveiller ce prix (nouveau en 1.1.0)
+
+Sur la page d'un produit ouverte dans NeoDex, le bouton SURVEILLER CE PRIX de la barre d'adresse le suit d'un clic, avec le prix affiché. Sur un produit déjà suivi, il relève le prix du moment.
+
 ## Comment ça marche
 
 - Colle l’adresse de la **page du produit** et, si tu veux, un **prix cible**, puis **Suivre**.
@@ -22,3 +26,14 @@ Le prix des produits que tu attends, surveillé pour toi.
 ## Installer
 
 Dans NeoDex : **NeoStore → À découvrir → Soldes → Installer**.
+
+## Surveiller ce prix, depuis le navigateur (1.1.0)
+
+Sur la page d’un produit ouverte dans NeoDex, un bouton **SURVEILLER CE PRIX** apparaît à droite de la barre d’adresse. Un clic, et le produit est suivi avec le prix affiché, sans quitter la page.
+
+- Le bouton n’apparaît que sur les fiches produit (celles qui donnent leur prix aux moteurs de recherche, comme la plupart des boutiques).
+- Le prix est lu **dans la page que tu vois** : ça marche aussi sur les sites qui bloquent les robots.
+- Sur un produit déjà suivi, le même bouton **relève le prix du moment** et te dit de combien il a bougé.
+- Jamais dans un onglet privé. Soldes ne voit que l’adresse, le titre et les données du produit, et seulement quand tu cliques.
+
+Il faut NeoDex 3.4.2 ou plus récent.

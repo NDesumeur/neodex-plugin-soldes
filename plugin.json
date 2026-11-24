@@ -1,16 +1,19 @@
 {
   "id": "neodex.soldes",
   "name": "Soldes",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": "NDesumeur",
-  "description": "Colle le lien d'un produit en ligne : NeoDex surveille son prix toutes les 6 heures, trace sa courbe et te prévient quand il baisse ou passe sous ton prix cible. Pour un site qui bloque, tu notes le prix à la main et la courbe continue.",
+  "description": "Colle le lien d'un produit en ligne, ou clique « SURVEILLER CE PRIX » dans la barre d'adresse de NeoDex sur la page du produit : NeoDex relève son prix toutes les 6 heures, trace sa courbe et te prévient quand il baisse ou passe sous ton prix cible. Pour un site qui bloque, le bouton relève le prix de la page affichée, ou tu le notes à la main.",
   "icon": "icon.png",
   "entry": "index.js",
   "view": "soldes",
   "neobase": ">=4.0.0",
   "type": "app",
   "category": "Outils",
-  "compatibility": ["windows", "linux"],
+  "compatibility": [
+    "windows",
+    "linux"
+  ],
   "syncMode": "fusion",
   "syncInfo": "Tes produits suivis et leur historique de prix suivent ton compte.",
   "mobile": false,
@@ -22,5 +25,14 @@
     "network",
     "notifications",
     "background"
+  ],
+  "neodex": ">=3.4.2",
+  "commands": [
+    {
+      "id": "watch",
+      "title": "Surveiller ce prix",
+      "page": "product",
+      "background": true
+    }
   ]
 }

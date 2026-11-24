@@ -403,6 +403,30 @@ export default async function (ctx) {
     toast(ok ? 'Suivi : ' + money(last(it), it.cur) : 'Ajouté, mais ' + it.err, !ok);
   };
   $('soAll').onclick = () => checkAll(false);
+
+  // --- le bouton « SURVEILLER CE PRIX » de la barre d'adresse de NeoDex, sur une fiche produit ---
+  // NeoDex donne l'adresse, le titre et les données produit de la page affichée (pas de nouvelle requête au site, donc ça marche aussi sur les sites qui bloquent les robots)
+  // un même produit : même site et même chemin (Amazon : même code /dp/…), sans tenir compte de ce qui suit « ? »
+  const pageKey = u => { try { const x = new URL(u), asin = /\/(?:dp|gp\/product)\/([A-Z0-9]{10})/.exec(x.pathname); return x.hostname.replace(/^www\./, '') + (asin ? '/dp/' + asin[1] : x.pathname.replace(/\/+$/, '')); } catch { return String(u); } };
+  async function watchPage(d) {
+    if (!d || !/^https?:\/\//.test(d.url || '')) return null;
+    const got = soParse(String(d.meta || '')), url = String(d.url).split('#')[0];
+    let it = data.items.find(x => pageKey(x.url) === pageKey(url));
+    if (it) {  // déjà suivi : le prix affiché compte comme un relevé
+      if (got.price == null) { toast('Soldes suit déjà ce produit, mais ne trouve pas son prix sur cette page.', true); return it; }
+      const before = last(it); add(it, got.price, true); it.err = ''; it.cur = got.cur || it.cur; keep(); render();
+      toast(before == null || before === got.price ? 'Déjà suivi : toujours ' + money(got.price, it.cur) : 'Relevé : ' + money(got.price, it.cur) + ' (' + (got.price < before ? '−' : '+') + money(Math.abs(got.price - before), it.cur) + ')');
+      return it;
+    }
+    it = { url, name: (got.name || String(d.title || '') || new URL(url).hostname).slice(0, 200), added: Date.now(), hist: [], target: null, cur: got.cur || 'EUR' };
+    if (got.price != null) add(it, got.price, true); else it.err = 'prix introuvable sur la page : note-le à la main';
+    data.items.unshift(it); keep(); render();
+    toast(got.price != null ? 'Soldes suit « ' + it.name.slice(0, 50) + ' » à ' + money(got.price, it.cur) + ' : tu seras prévenu s’il baisse.' : 'Ajouté à Soldes, mais le prix n’est pas lisible : note-le à la main.', got.price == null);
+    return it;
+  }
+  ctx.commands?.on('watch', d => { watchPage(d); });
+  $('soList').__watch = async d => { const it = await watchPage(d); return it ? { n: it.hist.length, p: last(it), name: it.name } : null; };  // le test
+  $('soList').__drop = re => { data.items = data.items.filter(x => !re.test(x.url)); keep(); render(); };
   {  // vérification : le prix se lit dans les trois formes courantes, au format français comme anglais ; une page sans prix donne null
     const bad = [], P = h => soParse(h).price;
     if (P('<script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","name":"Casque","offers":{"@type":"Offer","price":"129.99","priceCurrency":"EUR"}}</script>') !== 129.99) bad.push('JSON-LD');
@@ -411,6 +435,7 @@ export default async function (ctx) {
     if (P('<span itemprop="price" content="1,234.50">') !== 1234.5) bad.push('itemprop');
     if (P('<html><title>Rien</title></html>') !== null) bad.push('page sans prix');
     if (soParse('<title>Lampe &amp; abat-jour</title><meta itemprop="price" content="10">').name !== 'Lampe & abat-jour') bad.push('nom');
+    if (pageKey('https://www.amazon.fr/Casque-X/dp/B0ABCDEF12/ref=sr_1?k=1') !== pageKey('https://amazon.fr/dp/B0ABCDEF12') || pageKey('https://a.fr/p/1/?x=2#h') !== pageKey('https://a.fr/p/1') || pageKey('https://a.fr/p/1') === pageKey('https://a.fr/p/2')) bad.push('même produit');
     console.assert(!bad.length, 'soldes', bad); view.dataset.selfcheck = bad.join(' | ') || 'ok';
   }
   render();
